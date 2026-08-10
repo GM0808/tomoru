@@ -143,7 +143,7 @@
 <div class="grid">
  <div class="field" style="grid-column:span 2"><label>物件名（任意）</label>
    <input type="text" id="title" value="" placeholder="例: ○○市△△ 一棟アパート"></div>
- <div class="field"><label>価格 [万円]</label><input type="number" id="price_man" value="10000"></div>
+ <div class="field"><label>価格 [千円]</label><input type="number" id="price_sen" value="100000"></div>
  <div class="field"><label>表面利回り [%]</label><input type="number" id="yield_pct" value="7.00" step="0.01"></div>
  <div class="field"><label>建物構造</label><select id="structure">
    <option selected>木造</option><option>軽量鉄骨</option><option>鉄骨</option>
@@ -270,7 +270,7 @@ function card(head,grade,sub){
 }
 
 function calc(){
-  const price = num("price_man")*10000;
+  const price = num("price_sen")*1000;
   const area = num("building_area");
   if(!(price>0) || !(area>0) || !(num("yield_pct")>0)){
     $("output").innerHTML = '<div class="legend-box">価格・表面利回り・建物面積を入力してください。</div>';
