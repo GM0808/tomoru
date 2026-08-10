@@ -126,12 +126,23 @@
   .print-head { display:none; }
   @media print {
     header, .page-head, .input-area, .print-btn-row, footer { display:none !important; }
-    body { background:#fff; }
+    body { background:#fff; line-height:1.5; }
     main { max-width:none; padding:0; }
-    .print-head { display:block; text-align:center; margin-bottom:1.2rem;
-      border-bottom:2px solid var(--amber); padding-bottom:.8rem; }
+    .print-head { display:block; text-align:center; margin-bottom:.8rem;
+      border-bottom:2px solid var(--amber); padding-bottom:.5rem; }
     table, .panel, .cards { break-inside:avoid; box-shadow:none; }
-    h2 { break-after:avoid; }
+    h2 { break-after:avoid; font-size:.95rem; margin:.9rem 0 .45rem; }
+    .sec-label { display:none; }
+    td { padding:.28rem .6rem; font-size:.7rem; }
+    .cards { gap:.5rem; }
+    .card-body { padding:.3rem .3rem .55rem; }
+    .grade { font-size:1.4rem; }
+    .big { font-size:1rem; }
+    .sub { font-size:.62rem; }
+    .legend-box { font-size:.6rem; padding:.4rem .7rem; margin-top:.4rem; line-height:1.5; }
+    .panel { padding:.3rem; }
+    .panel svg { max-width:72%; display:block; margin:0 auto; }
+    .disclaimer { font-size:.6rem; line-height:1.6; margin-top:.9rem; padding-top:.6rem; }
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
   footer { position:relative; overflow:hidden; background:var(--sky-deep);
