@@ -255,7 +255,8 @@ function svgChart(series, yUnit, yLabel){
   for(const s of series){
     out+=`<polyline points="${s.vals.map((v,i)=>x(i).toFixed(1)+","+y(v).toFixed(1)).join(" ")}"
       fill="none" stroke="${s.color}" stroke-width="2.5"/>`;}
-  let lx=PL;
+  const lw=series.map(s=>24+13*s.name.length+30);
+  let lx=PL+Math.max(0,(pw-(lw.reduce((a,b)=>a+b,0)-30))/2);
   for(const s of series){out+=`<rect x="${lx}" y="8" width="18" height="4" fill="${s.color}"/>`
     +`<text x="${lx+24}" y="14" font-size="12" fill="#6b6659">${s.name}</text>`;lx+=24+13*s.name.length+30;}
   out+=`<text x="${PL}" y="${PT-8}" font-size="11" fill="#8a8375">${yLabel}</text></svg>`;
@@ -366,9 +367,9 @@ function calc(){
 
 <h2>物件・ローン概要</h2>
 <table>
-<tr><td>物件価格</td><td class="num">${fmt(price/10000)}万円（CF3%目標 ${fmt(cf3)}万円）</td>
+<tr><td>物件価格</td><td class="num">${fmt(price/1000)}千円（CF3%目標 ${fmt(cf3*10)}千円）</td>
  <td>築年数</td><td class="num">${age}年（残存耐用年数 ${remaining}年）</td></tr>
-<tr><td>借入金額</td><td class="num">${fmt(loanAmount/10000)}万円（融資割合${num("loan_ratio")}%）</td>
+<tr><td>借入金額</td><td class="num">${fmt(loanAmount/1000)}千円（融資割合${num("loan_ratio")}%）</td>
  <td>返済期間</td><td class="num">${years}年 ／ 金利 ${num("interest")}%</td></tr>
 <tr><td>返済金額(月)</td><td class="num">${fmt(monthly)}円</td>
  <td>返済金額(年)</td><td class="num">${fmt(annualPay)}円</td></tr>
@@ -382,7 +383,7 @@ function calc(){
 <div class="panel">${svgChart([{name:"賃料収入(月・空室後)",color:"#c96f4a",vals:rentSeries},
   {name:"CF(月)",color:"#f5a623",vals:cfSeries}],1,"円/月")}</div>
 <div class="panel" style="margin-top:.8rem">${svgChart([{name:"CF累計",color:"#f5a623",vals:cumSeries},
-  {name:"残債",color:"#6b3a56",vals:balSeries}],10000,"万円")}</div>
+  {name:"残債",color:"#6b3a56",vals:balSeries}],1000,"千円")}</div>
 
 <h2>収益・費用（年間）</h2>
 <table>
