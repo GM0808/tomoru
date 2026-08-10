@@ -114,6 +114,26 @@
   .disclaimer { margin-top:2.6rem; font-size:.75rem; color:var(--ink-soft); line-height:2;
     border-top:1px solid var(--line); padding-top:1.4rem; }
 
+  .print-btn {
+    display:inline-block; padding:.65rem 1.6rem; font-family:inherit;
+    font-size:.85rem; font-weight:500; letter-spacing:.15em; color:#fff;
+    background:linear-gradient(135deg, var(--amber), var(--horizon));
+    border:none; border-radius:8px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(201,111,74,.35);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .print-btn:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(201,111,74,.45); }
+  .print-head { display:none; }
+  @media print {
+    header, .page-head, .input-area, .print-btn-row, footer { display:none !important; }
+    body { background:#fff; }
+    main { max-width:none; padding:0; }
+    .print-head { display:block; text-align:center; margin-bottom:1.2rem;
+      border-bottom:2px solid var(--amber); padding-bottom:.8rem; }
+    table, .panel, .cards { break-inside:avoid; box-shadow:none; }
+    h2 { break-after:avoid; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
   footer { position:relative; overflow:hidden; background:var(--sky-deep);
     color:rgba(255,255,255,.75); text-align:center; padding:3rem 1.5rem 2.4rem; }
   footer > * { position:relative; z-index:2; }
@@ -170,6 +190,7 @@
 </div>
 
 <main>
+<div class="input-area">
 <span class="sec-label">INPUT</span>
 <h2>物件情報を入力</h2>
 <div class="grid">
@@ -214,6 +235,7 @@
  賃料下落率・返済期間は、新築/中古の切り替え・築年月の変更で当社の標準値に戻ります。
  個別に書き換えればその値が優先されます。</p>
 </details>
+</div>
 
 <div id="output"></div>
 
@@ -395,8 +417,20 @@ function calc(){
 
   const gC=gradeCCR(ccr), gD=gradeDSCR(dscr), gF=gradeCF(cfRate);
   const cfColor = cf<0?"var(--warn)":"var(--good)";
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日`;
+  const propName = $("title").value.trim();
   $("output").innerHTML = `
-<span class="sec-label" style="margin-top:2.2rem">RESULT</span>
+<div class="print-head">
+  <div style="font-family:'Zen Old Mincho',serif;font-size:1.15rem;letter-spacing:.14em">
+    収益シミュレーション　${propName || ""}</div>
+  <div style="font-size:.75rem;color:#666;margin-top:.3rem">
+    作成日: ${dateStr}　株式会社TOMORU 収益シミュレーター</div>
+</div>
+<div class="print-btn-row" style="text-align:right;margin-top:2.2rem">
+  <button class="print-btn" onclick="window.print()">PDFで出力</button>
+</div>
+<span class="sec-label">RESULT</span>
 <h2>目安評価（初年）</h2>
 <div class="cards">
  <div class="card"><div class="card-head">キャッシュフロー（税前）</div><div class="card-body">
