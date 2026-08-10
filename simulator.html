@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>収益シミュレーター｜株式会社TOMORU</title>
+<meta name="description" content="賃貸用不動産の収益性（キャッシュフロー・返済比率・自己資金利回り）をその場で試算できる、株式会社TOMORUの収益シミュレーターです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-deep:   #141b33;
+    --sky-mid:    #2a2a4a;
+    --dusk:       #6b3a56;
+    --horizon:    #c96f4a;
+    --amber:      #f5a623;
+    --glow:       #ffd28a;
+    --cream:      #faf6ee;
+    --cream-deep: #f3ecdd;
+    --ink:        #33302a;
+    --ink-soft:   #6b6659;
+    --line:       #e2d9c6;
+    --good:       #4e8c5f;
+    --warn:       #b3453a;
+    font-size: 16px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Noto Sans JP', "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color:var(--ink); background:var(--cream); line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3 { font-family:'Zen Old Mincho', "Hiragino Mincho ProN", "Yu Mincho", serif; }
+
+  header {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 1.6rem; background:rgba(20,27,51,.92);
+    box-shadow:0 1px 12px rgba(0,0,0,.25);
+  }
+  .brand {
+    font-family:'Zen Old Mincho', serif; color:#fff; font-size:1.05rem;
+    letter-spacing:.12em; text-decoration:none;
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .brand .flame { width:14px; height:18px; }
+  nav { display:flex; gap:1.4rem; }
+  nav a { color:rgba(255,255,255,.85); text-decoration:none; font-size:.82rem; letter-spacing:.14em; }
+  nav a:hover { color:var(--glow); }
+  @media (max-width:640px){ nav { display:none; } }
+
+  .page-head {
+    background:linear-gradient(to bottom, var(--sky-deep), var(--sky-mid));
+    padding:7.5rem 1.5rem 3.2rem; text-align:center;
+  }
+  .page-head h1 { color:#fff; font-size:clamp(1.5rem,4vw,2.1rem); letter-spacing:.18em; font-weight:600; }
+  .page-head .sub { color:var(--glow); font-size:.85rem; letter-spacing:.25em; margin-top:.8rem;
+    font-family:'Zen Old Mincho', serif; }
+
+  main { max-width:960px; margin:0 auto; padding:2.6rem 1.2rem 4rem; }
+  .sec-label { display:block; color:var(--horizon); font-size:.72rem; letter-spacing:.4em; font-weight:500; margin-bottom:.4rem; }
+  h2 { font-size:1.2rem; letter-spacing:.14em; margin:2.4rem 0 1rem; }
+  h2:first-of-type { margin-top:0; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:.8rem; }
+  .field { background:#fff; border-radius:10px; padding:.7rem .9rem; box-shadow:0 3px 12px rgba(51,48,42,.06); }
+  .field label { display:block; font-size:.72rem; color:var(--ink-soft); letter-spacing:.06em; margin-bottom:.25rem; }
+  .field input, .field select {
+    width:100%; border:1px solid var(--line); border-radius:6px; padding:.5rem .6rem;
+    font-size:.95rem; font-family:inherit; color:var(--ink); background:#fcfaf4; text-align:right;
+  }
+  .field select, .field input[type=text] { text-align:left; }
+  .field input:focus, .field select:focus { outline:none; border-color:var(--amber); box-shadow:0 0 0 3px rgba(245,166,35,.18); }
+
+  details {
+    margin-top:1rem; background:#fff; border-radius:10px;
+    box-shadow:0 3px 12px rgba(51,48,42,.06); padding:.9rem 1.1rem;
+  }
+  details summary { cursor:pointer; font-size:.88rem; letter-spacing:.08em; color:var(--ink-soft); }
+  details .grid { margin-top:.9rem; }
+  .preset-note { font-size:.75rem; color:var(--ink-soft); margin-top:.7rem; }
+  .pill { display:inline-block; background:var(--cream-deep); color:var(--horizon); border-radius:10px;
+    padding:.05rem .7rem; font-size:.72rem; margin-left:.5rem; letter-spacing:.06em; }
+
+  .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; }
+  @media (max-width:640px){ .cards { grid-template-columns:repeat(2,1fr); } }
+  .card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 6px 24px rgba(51,48,42,.07);
+    border-top:3px solid var(--amber); }
+  .card-head { font-size:.75rem; letter-spacing:.08em; text-align:center; padding:.55rem .3rem 0; color:var(--ink-soft); }
+  .card-body { text-align:center; padding:.5rem .4rem .9rem; }
+  .grade { font-size:2rem; font-weight:700; line-height:1.2; font-family:'Zen Old Mincho', serif; }
+  .big { font-size:1.25rem; font-weight:700; }
+  .sub { font-size:.72rem; color:var(--ink-soft); margin-top:.15rem; }
+
+  table { width:100%; border-collapse:collapse; background:#fff; font-size:.85rem;
+    border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(51,48,42,.06); }
+  td { border-bottom:1px solid var(--line); padding:.55rem .9rem; }
+  tr:last-child td { border-bottom:none; }
+  td.num { text-align:right; white-space:nowrap; }
+  td.note { color:var(--ink-soft); font-size:.72rem; }
+  tr.total td { font-weight:700; background:#fcfaf4; }
+
+  .panel { background:#fff; border-radius:12px; padding:.8rem; box-shadow:0 3px 12px rgba(51,48,42,.06); }
+  .legend-box { font-size:.72rem; color:var(--ink-soft); background:var(--cream-deep);
+    border-radius:10px; padding:.7rem 1rem; margin-top:.7rem; line-height:1.8; }
+
+  .disclaimer { margin-top:2.6rem; font-size:.75rem; color:var(--ink-soft); line-height:2;
+    border-top:1px solid var(--line); padding-top:1.4rem; }
+
+  footer { background:var(--sky-deep); color:rgba(255,255,255,.75); text-align:center; padding:3rem 1.5rem 2.4rem; }
+  footer .f-brand { font-family:'Zen Old Mincho', serif; color:#fff; letter-spacing:.16em; font-size:1.05rem;
+    margin-bottom:.8rem; display:flex; align-items:center; justify-content:center; gap:.5rem; }
+  footer .f-brand .flame { width:12px; height:16px; }
+  footer .copy { font-size:.72rem; letter-spacing:.12em; color:rgba(255,255,255,.45); margin-top:1.2rem; }
+  @media (max-width:640px){ table { display:block; overflow-x:auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="index.html">
+    <svg class="flame" viewBox="0 0 20 26" aria-hidden="true"><path d="M10 0C10 6 3 8.5 3 15a7 7 0 0 0 14 0C17 8.5 10 6 10 0Z" fill="#f5a623"/><path d="M10 9c0 3.4-3.4 4.6-3.4 8a3.4 3.4 0 0 0 6.8 0C13.4 13.6 10 12.4 10 9Z" fill="#ffd28a"/></svg>
+    株式会社TOMORU
+  </a>
+  <nav>
+    <a href="index.html#philosophy">私たちの想い</a>
+    <a href="index.html#business">事業内容</a>
+    <a href="simulator.html">シミュレーター</a>
+    <a href="index.html#company">会社概要</a>
+    <a href="index.html#contact">お問い合わせ</a>
+  </nav>
+</header>
+
+<div class="page-head">
+  <h1>収益シミュレーター</h1>
+  <p class="sub">物件の数字に、あかりを。</p>
+</div>
+
+<main>
+<span class="sec-label">INPUT</span>
+<h2>物件情報を入力</h2>
+<div class="grid">
+ <div class="field" style="grid-column:span 2"><label>物件名（任意）</label>
+   <input type="text" id="title" value="" placeholder="例: ○○市△△ 一棟アパート"></div>
+ <div class="field"><label>価格 [万円]</label><input type="number" id="price_man" value="10000"></div>
+ <div class="field"><label>表面利回り [%]</label><input type="number" id="yield_pct" value="7.00" step="0.01"></div>
+ <div class="field"><label>建物構造</label><select id="structure">
+   <option selected>木造</option><option>軽量鉄骨</option><option>鉄骨</option>
+   <option>RC</option><option>SRC</option></select></div>
+ <div class="field"><label>新築 / 中古</label><select id="is_new">
+   <option value="1" selected>新築（未完成含む）</option><option value="0">中古</option></select></div>
+ <div class="field"><label>築年月（中古のみ）</label>
+   <input type="text" id="built" value="" placeholder="例: 2014-02"></div>
+ <div class="field"><label>建物面積 [㎡]</label><input type="number" id="building_area" value="200" step="0.01"></div>
+</div>
+
+<details>
+ <summary>前提条件を調整する<span class="pill" id="presetLabel"></span></summary>
+ <div class="grid">
+  <div class="field"><label>融資割合 [%]</label><input type="number" id="loan_ratio" value="90"></div>
+  <div class="field"><label>諸費用率 [%]</label><input type="number" id="misc_cost" value="7"></div>
+  <div class="field"><label>金利 [%]</label><input type="number" id="interest" value="2.0" step="0.1"></div>
+  <div class="field"><label>返済期間 [年]（空=標準）</label><input type="number" id="loan_years" value=""></div>
+  <div class="field"><label>貸室空室率 [%]</label><input type="number" id="vacancy" value="5"></div>
+  <div class="field"><label>年間賃料下落率 [%]</label><input type="number" id="decline" value="1" step="0.1"></div>
+  <div class="field"><label>賃貸管理手数料率 [%]</label><input type="number" id="mgmt_fee" value="" step="0.1"></div>
+  <div class="field"><label>建物管理費 [円/坪月]</label><input type="number" id="bldg_mgmt" value=""></div>
+  <div class="field"><label>共用部水光熱費 [円/坪月]</label><input type="number" id="utility" value="50"></div>
+  <div class="field"><label>建築費坪単価 [円]</label><input type="number" id="construction" value="550000"></div>
+  <div class="field"><label>災害保険掛率 [%]</label><input type="number" id="insurance" value="0.3" step="0.1"></div>
+  <div class="field"><label>固都税率（対実効賃料） [%]</label><input type="number" id="property_tax" value=""></div>
+  <div class="field"><label>修繕費掛率 [%]</label><input type="number" id="repair" value="" step="0.1"></div>
+  <div class="field"><label>原状回復費 [円/坪]</label><input type="number" id="restoration" value=""></div>
+  <div class="field"><label>回転率 [%]</label><input type="number" id="turnover" value="25"></div>
+  <div class="field"><label>募集AD [ヶ月]</label><input type="number" id="ad_months" value="1"></div>
+  <div class="field"><label>税率 [%]</label><input type="number" id="tax_rate" value="20"></div>
+  <div class="field"><label>建物割合 [%]</label><input type="number" id="building_ratio" value="70"></div>
+  <div class="field"><label>有効率 [%]</label><input type="number" id="effective_ratio" value="100"></div>
+ </div>
+ <p class="preset-note">費用5項目（管理料・建物管理・固都税率・修繕・原状回復）と返済期間は、
+ 新築/中古の切り替え・築年月の変更で当社の標準値に戻ります。個別に書き換えればその値が優先されます。</p>
+</details>
+
+<div id="output"></div>
+
+<div class="disclaimer">
+<strong>ご利用にあたって</strong><br>
+・本シミュレーションは一定の前提条件にもとづく概算であり、将来の収益・税額・融資条件を保証するものではありません。<br>
+・評価（A〜D）は当社が目安として設定した基準によるものです。物件の購入を推奨するものではありません。<br>
+・本シミュレーターは情報提供を目的としており、投資助言・税務相談に該当するものではありません。実際のご判断は、専門家への相談のうえ自己の責任にてお願いいたします。<br>
+・入力されたデータはお使いのブラウザ内でのみ計算され、当社サーバーへ送信されることはありません。
+</div>
+</main>
+
+<footer>
+  <div class="f-brand">
+    <svg class="flame" viewBox="0 0 20 26" aria-hidden="true"><path d="M10 0C10 6 3 8.5 3 15a7 7 0 0 0 14 0C17 8.5 10 6 10 0Z" fill="#f5a623"/><path d="M10 9c0 3.4-3.4 4.6-3.4 8a3.4 3.4 0 0 0 6.8 0C13.4 13.6 10 12.4 10 9Z" fill="#ffd28a"/></svg>
+    株式会社TOMORU
+  </div>
+  <div>東京都世田谷区八幡山3丁目9番7号</div>
+  <p class="copy">&copy; 2026 TOMORU Inc. All Rights Reserved.</p>
+</footer>
+
+<script>
+"use strict";
+const TSUBO = 0.3025;
+const LIFE = {"木造":30,"軽量鉄骨":27,"鉄骨":34,"RC":47,"SRC":47};
+const NEW_PRESET = {mgmt_fee:3.3,bldg_mgmt:150,property_tax:7,repair:0.1,restoration:5000};
+const USED_PRESET = {mgmt_fee:5.5,bldg_mgmt:200,property_tax:10,repair:0.5,restoration:10000};
+const GRADE_COLOR = {A:"#4e8c5f",B:"#8bbf3f",C:"#e8a33d",D:"#b3453a"};
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value);
+const fmt = (v,d=0) => (v===null||v===undefined||isNaN(v)) ? "—"
+  : v.toLocaleString("ja-JP",{minimumFractionDigits:d,maximumFractionDigits:d});
+
+function gradeCCR(p){return p>=20?"A":p>=15?"B":p>=10?"C":"D";}
+function gradeDSCR(p){return p<=50?"A":p<=60?"B":p<=65?"C":"D";}
+function gradeCF(p){return p>=2?"A":p>=1.5?"B":p>=1?"C":"D";}
+
+function ageYears(){
+  if($("is_new").value==="1") return 0;
+  const m = $("built").value.trim().match(/^(\d{4})[-/年]?(\d{1,2})?/);
+  if(!m) return null;
+  const by = +m[1], bm = m[2]? +m[2] : 1;
+  const now = new Date();
+  const months = (now.getFullYear()-by)*12 + (now.getMonth()+1-bm);
+  return Math.max(0, Math.ceil(months/12));
+}
+
+function applyPreset(){
+  const isNew = $("is_new").value==="1" || ageYears()===0;
+  const p = isNew ? NEW_PRESET : USED_PRESET;
+  for(const k in p) $(k).value = p[k];
+  const age = ageYears();
+  const life = LIFE[$("structure").value] || 30;
+  $("loan_years").value = isNew ? 35 : (age===null ? "" : Math.max(life-age,1));
+  $("presetLabel").textContent = isNew ? "新築標準" : "中古標準";
+}
+
+function svgChart(series, yUnit, yLabel){
+  const W=860,H=330,PL=70,PR=20,PT=30,PB=40,pw=W-PL-PR,ph=H-PT-PB;
+  const n = Math.max(...series.map(s=>s.vals.length));
+  let lo = Math.min(0,...series.map(s=>Math.min(...s.vals)));
+  let hi = Math.max(0,...series.map(s=>Math.max(...s.vals)));
+  let span = (hi-lo)||1; hi+=span*.05; lo-=span*.05; span=hi-lo;
+  const x=i=>PL+i/(n-1)*pw, y=v=>PT+(hi-v)/span*ph;
+  let out = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;background:#fff">`;
+  for(let k=0;k<=5;k++){const gv=lo+span*k/5,gy=y(gv);
+    out+=`<line x1="${PL}" y1="${gy}" x2="${W-PR}" y2="${gy}" stroke="#eee4d4"/>`
+       +`<text x="${PL-6}" y="${gy+4}" text-anchor="end" font-size="11" fill="#8a8375">${fmt(gv/yUnit)}</text>`;}
+  if(lo<0&&hi>0) out+=`<line x1="${PL}" y1="${y(0)}" x2="${W-PR}" y2="${y(0)}" stroke="#b9b0a0" stroke-width="1.5"/>`;
+  for(let yr=0;yr<=Math.floor(n/12);yr+=5){const i=Math.min(yr*12,n-1);
+    out+=`<text x="${x(i)}" y="${H-PB+16}" text-anchor="middle" font-size="11" fill="#8a8375">${yr}年</text>`;}
+  for(const s of series){
+    out+=`<polyline points="${s.vals.map((v,i)=>x(i).toFixed(1)+","+y(v).toFixed(1)).join(" ")}"
+      fill="none" stroke="${s.color}" stroke-width="2.5"/>`;}
+  let lx=PL;
+  for(const s of series){out+=`<rect x="${lx}" y="8" width="18" height="4" fill="${s.color}"/>`
+    +`<text x="${lx+24}" y="14" font-size="12" fill="#6b6659">${s.name}</text>`;lx+=24+13*s.name.length+30;}
+  out+=`<text x="${PL}" y="${PT-8}" font-size="11" fill="#8a8375">${yLabel}</text></svg>`;
+  return out;
+}
+
+function card(head,grade,sub){
+  return `<div class="card"><div class="card-head">${head}</div><div class="card-body">
+    <div class="grade" style="color:${GRADE_COLOR[grade]||'#666'}">${grade}</div>
+    <div class="sub">${sub}</div></div></div>`;
+}
+
+function calc(){
+  const price = num("price_man")*10000;
+  const area = num("building_area");
+  if(!(price>0) || !(area>0) || !(num("yield_pct")>0)){
+    $("output").innerHTML = '<div class="legend-box">価格・表面利回り・建物面積を入力してください。</div>';
+    return;
+  }
+  const age = ageYears();
+  if(age===null){
+    $("output").innerHTML = '<div class="legend-box">中古の場合は築年月（例: 2014-02）を入力してください。</div>';
+    return;
+  }
+  const life = LIFE[$("structure").value]||30;
+  const remaining = Math.max(life-age,1);
+  const years = num("loan_years")>0 ? num("loan_years") : (age===0?35:remaining);
+  const rentable = area*num("effective_ratio")/100, tsubo = rentable*TSUBO;
+  const fullRent = price*num("yield_pct")/100;
+  const vacancy = num("vacancy")/100, vacLoss = fullRent*vacancy;
+  const effRent = fullRent-vacLoss;
+  const construction = num("construction")*tsubo;
+  const ex = {
+    mgmt: effRent*num("mgmt_fee")/100,
+    bldg: num("bldg_mgmt")*tsubo*12,
+    util: num("utility")*tsubo*12,
+    ins: construction*num("insurance")/100,
+    ptax: effRent*num("property_tax")/100,
+    rep: construction*num("repair")/100,
+    resto: num("restoration")*tsubo*num("turnover")/100*(1-vacancy),
+    ad: effRent/12*num("ad_months")*num("turnover")/100,
+  };
+  const exTotal = Object.values(ex).reduce((a,b)=>a+b,0);
+  const noi = effRent-exTotal;
+
+  const loanAmount = Math.round(price*num("loan_ratio")/100);
+  const r = num("interest")/100/12, n = Math.round(years*12);
+  const monthly = r===0 ? loanAmount/n : loanAmount*r/(1-Math.pow(1+r,-n));
+  const annualPay = monthly*12, totalPay = monthly*n;
+  let bal = loanAmount, interestY1 = 0; const balances = [];
+  for(let i=0;i<n;i++){
+    const it = bal*r; let pr = monthly-it;
+    if(i===n-1) pr = bal;
+    bal = Math.max(0,bal-pr);
+    if(i<12) interestY1 += it;
+    balances.push(bal);
+  }
+  const cf = noi-annualPay;
+  const equity = price*(1-num("loan_ratio")/100)+price*num("misc_cost")/100;
+  const ccr = cf/equity*100, dscr = annualPay/effRent*100, cfRate = cf/price*100;
+  const cf3 = Math.round(noi/(0.03+num("loan_ratio")/100*(annualPay/loanAmount))/10000);
+
+  const bldgValue = price*num("building_ratio")/100, landValue = price-bldgValue;
+  const depYears = age>0 ? remaining+age*0.2 : life;
+  const dep = bldgValue/depYears;
+  const taxable = noi-dep-interestY1;
+  const taxAmount = taxable*num("tax_rate")/100;
+  const afterTaxProfit = taxable-taxAmount, afterTaxCF = cf-taxAmount;
+
+  const rentSeries=[],cfSeries=[],cumSeries=[],balSeries=[];
+  let cum=0; const mCost=exTotal/12;
+  for(let i=0;i<35*12;i++){
+    const dec = Math.pow(1-num("decline")/100, i/12);
+    const rent = effRent/12*dec;
+    const pay = i<n ? monthly : 0;
+    const mcf = rent-mCost-pay; cum+=mcf;
+    rentSeries.push(rent); cfSeries.push(mcf); cumSeries.push(cum);
+    balSeries.push(i<n?balances[i]:0);
+  }
+
+  const gC=gradeCCR(ccr), gD=gradeDSCR(dscr), gF=gradeCF(cfRate);
+  const cfColor = cf<0?"var(--warn)":"var(--good)";
+  $("output").innerHTML = `
+<span class="sec-label" style="margin-top:2.2rem">RESULT</span>
+<h2>目安評価（初年）</h2>
+<div class="cards">
+ <div class="card"><div class="card-head">キャッシュフロー（税前）</div><div class="card-body">
+   <div class="big" style="color:${cfColor}">${fmt(cf)}</div><div class="sub">円/年</div></div></div>
+ ${card("CCR（自己資金利回り）",gC,ccr.toFixed(2)+" %")}
+ ${card("返済比率",gD,dscr.toFixed(2)+" %")}
+ ${card("キャッシュフロー率",gF,cfRate.toFixed(2)+" %")}
+</div>
+<div class="legend-box">
+※いずれも初年の目安評価です（当社基準）。返済比率: 50%以下=A、〜60%=B、〜65%=C、65.1%以上=D／
+キャッシュフロー率: 2%以上=A、1.5%以上=B、1%以上=C／CCR: 20%以上=A、15%以上=B、10%以上=C</div>
+
+<h2>指標の計算式（この物件の数値で）</h2>
+<table>
+<tr><td>キャッシュフロー（税前）</td><td class="note">純収益(NOI) − 年間返済額 ＝ (税前)年間CF</td>
+ <td class="num">${fmt(noi)} − ${fmt(annualPay)} = <b>${fmt(cf)}円/年</b></td></tr>
+<tr><td>返済比率</td><td class="note">年間返済額 ÷ 賃貸年収合計（実効賃料）</td>
+ <td class="num">${fmt(annualPay)} ÷ ${fmt(effRent)} = <b>${dscr.toFixed(2)}%</b></td></tr>
+<tr><td>キャッシュフロー率</td><td class="note">(税前)年間CF ÷ 物件価格</td>
+ <td class="num">${fmt(cf)} ÷ ${fmt(price)} = <b>${cfRate.toFixed(2)}%</b></td></tr>
+<tr><td>CCR（自己資金利回り）</td><td class="note">(税前)年間CF ÷ 自己資金（頭金＋諸費用）</td>
+ <td class="num">${fmt(cf)} ÷ ${fmt(equity)} = <b>${ccr.toFixed(2)}%</b></td></tr>
+</table>
+
+<h2>物件・ローン概要</h2>
+<table>
+<tr><td>物件価格</td><td class="num">${fmt(price/10000)}万円（CF3%目標 ${fmt(cf3)}万円）</td>
+ <td>築年数</td><td class="num">${age}年（残存耐用年数 ${remaining}年）</td></tr>
+<tr><td>借入金額</td><td class="num">${fmt(loanAmount/10000)}万円（融資割合${num("loan_ratio")}%）</td>
+ <td>返済期間</td><td class="num">${years}年 ／ 金利 ${num("interest")}%</td></tr>
+<tr><td>返済金額(月)</td><td class="num">${fmt(monthly)}円</td>
+ <td>返済金額(年)</td><td class="num">${fmt(annualPay)}円</td></tr>
+<tr><td>総返済金額</td><td class="num">${fmt(totalPay)}円</td>
+ <td>自己資金（頭金＋諸費用）</td><td class="num">${fmt(equity)}円</td></tr>
+<tr><td>実質利回り</td><td class="num">${(noi/price*100).toFixed(2)}%（表面 ${num("yield_pct").toFixed(2)}%）</td>
+ <td>建物面積</td><td class="num">${fmt(area,2)}㎡（${tsubo.toFixed(2)}坪）</td></tr>
+</table>
+
+<h2>35年シミュレーション（月次）</h2>
+<div class="panel">${svgChart([{name:"賃料収入(月・空室後)",color:"#c96f4a",vals:rentSeries},
+  {name:"CF(月)",color:"#f5a623",vals:cfSeries}],1,"円/月")}</div>
+<div class="panel" style="margin-top:.8rem">${svgChart([{name:"CF累計",color:"#f5a623",vals:cumSeries},
+  {name:"残債",color:"#6b3a56",vals:balSeries}],10000,"万円")}</div>
+
+<h2>収益・費用（年間）</h2>
+<table>
+<tr><td>満室時想定賃貸収入</td><td class="num">${fmt(fullRent)}円</td>
+ <td class="note">月額賃料坪単価 ${fmt(fullRent/12/tsubo)}円/坪</td></tr>
+<tr><td>空室損失（${num("vacancy")}%）</td><td class="num">-${fmt(vacLoss)}円</td><td class="note"></td></tr>
+<tr><td>賃貸年収合計（実効）</td><td class="num">${fmt(effRent)}円</td><td class="note"></td></tr>
+<tr><td>賃貸管理費</td><td class="num">${fmt(ex.mgmt)}円</td><td class="note">${num("mgmt_fee")}%</td></tr>
+<tr><td>建物管理費</td><td class="num">${fmt(ex.bldg)}円</td><td class="note">${num("bldg_mgmt")}円/坪月</td></tr>
+<tr><td>共用部水光熱費</td><td class="num">${fmt(ex.util)}円</td><td class="note">${num("utility")}円/坪月</td></tr>
+<tr><td>災害保険</td><td class="num">${fmt(ex.ins)}円</td><td class="note">建築費×${num("insurance")}%</td></tr>
+<tr><td>固定資産税・都市計画税</td><td class="num">${fmt(ex.ptax)}円</td><td class="note">実効賃料×${num("property_tax")}%</td></tr>
+<tr><td>修繕費</td><td class="num">${fmt(ex.rep)}円</td><td class="note">建築費×${num("repair")}%</td></tr>
+<tr><td>原状回復費</td><td class="num">${fmt(ex.resto)}円</td><td class="note">${num("restoration")}円/坪×回転率</td></tr>
+<tr><td>募集経費</td><td class="num">${fmt(ex.ad)}円</td><td class="note">AD${num("ad_months")}ヶ月×回転率</td></tr>
+<tr class="total"><td>支出合計 → 年間純収益（NOI）</td><td class="num">-${fmt(exTotal)}円</td>
+ <td class="num"><b>${fmt(noi)}円</b></td></tr>
+</table>
+
+<h2>税金（概算）</h2>
+<table>
+<tr><td>土地</td><td class="num">${fmt(landValue)}円</td>
+ <td>建物（${num("building_ratio")}%）</td><td class="num">${fmt(bldgValue)}円</td></tr>
+<tr><td>償却年数（中古簡便法）</td><td class="num">${depYears.toFixed(1)}年</td>
+ <td>単年減価償却</td><td class="num">${fmt(dep)}円</td></tr>
+<tr><td>減価償却後純収益</td><td class="num">${fmt(noi-dep)}円</td>
+ <td>課税所得（利息控除後）</td><td class="num">${fmt(taxable)}円</td></tr>
+<tr><td>税引き前CF</td><td class="num">${fmt(cf)}円</td>
+ <td>税額（税率${num("tax_rate")}%）</td><td class="num">${fmt(taxAmount)}円</td></tr>
+<tr><td>税引き後利益</td><td class="num">${fmt(afterTaxProfit)}円</td>
+ <td>税引き後CF（税引き前CF − 税額）</td><td class="num">${fmt(afterTaxCF)}円</td></tr>
+</table>`;
+  window.__result = {cf, ccr, dscr, cfRate, cf3, noi, annualPay, monthly,
+                     equity, dep, afterTaxProfit, years, age};
+}
+
+const PRESET_TRIGGERS = ["is_new","built","structure"];
+document.querySelectorAll("input,select").forEach(el=>{
+  el.addEventListener("input",()=>{
+    if(PRESET_TRIGGERS.includes(el.id)) applyPreset();
+    calc();
+  });
+});
+applyPreset();
+calc();
+</script>
+</body>
+</html>
