@@ -143,7 +143,7 @@
 <div class="grid">
  <div class="field" style="grid-column:span 2"><label>物件名（任意）</label>
    <input type="text" id="title" value="" placeholder="例: ○○市△△ 一棟アパート"></div>
- <div class="field"><label>価格 [千円]</label><input type="number" id="price_sen" value="100000"></div>
+ <div class="field"><label>価格 [千円]</label><input type="text" inputmode="numeric" id="price_sen" value="100000"></div>
  <div class="field"><label>表面利回り [%]</label><input type="number" id="yield_pct" value="7.00" step="0.01"></div>
  <div class="field"><label>建物構造</label><select id="structure">
    <option selected>木造</option><option>軽量鉄骨</option><option>鉄骨</option>
@@ -165,21 +165,22 @@
   <div class="field"><label>貸室空室率 [%]</label><input type="number" id="vacancy" value="5"></div>
   <div class="field"><label>年間賃料下落率 [%]</label><input type="number" id="decline" value="1" step="0.1"></div>
   <div class="field"><label>賃貸管理手数料率 [%]</label><input type="number" id="mgmt_fee" value="" step="0.1"></div>
-  <div class="field"><label>建物管理費 [円/坪月]</label><input type="number" id="bldg_mgmt" value=""></div>
-  <div class="field"><label>共用部水光熱費 [円/坪月]</label><input type="number" id="utility" value="50"></div>
-  <div class="field"><label>建築費坪単価 [円]</label><input type="number" id="construction" value="550000"></div>
+  <div class="field"><label>建物管理費 [円/坪月]</label><input type="text" inputmode="numeric" id="bldg_mgmt" value=""></div>
+  <div class="field"><label>共用部水光熱費 [円/坪月]</label><input type="text" inputmode="numeric" id="utility" value="50"></div>
+  <div class="field"><label>建築費坪単価 [円]</label><input type="text" inputmode="numeric" id="construction" value="550000"></div>
   <div class="field"><label>災害保険掛率 [%]</label><input type="number" id="insurance" value="0.3" step="0.1"></div>
   <div class="field"><label>固都税率（対実効賃料） [%]</label><input type="number" id="property_tax" value=""></div>
   <div class="field"><label>修繕費掛率 [%]</label><input type="number" id="repair" value="" step="0.1"></div>
-  <div class="field"><label>原状回復費 [円/坪]</label><input type="number" id="restoration" value=""></div>
+  <div class="field"><label>原状回復費 [円/坪]</label><input type="text" inputmode="numeric" id="restoration" value=""></div>
   <div class="field"><label>回転率 [%]</label><input type="number" id="turnover" value="25"></div>
   <div class="field"><label>募集AD [ヶ月]</label><input type="number" id="ad_months" value="1"></div>
   <div class="field"><label>税率 [%]</label><input type="number" id="tax_rate" value="20"></div>
   <div class="field"><label>建物割合 [%]</label><input type="number" id="building_ratio" value="70"></div>
   <div class="field"><label>有効率 [%]</label><input type="number" id="effective_ratio" value="100"></div>
  </div>
- <p class="preset-note">費用5項目（管理料・建物管理・固都税率・修繕・原状回復）と返済期間は、
- 新築/中古の切り替え・築年月の変更で当社の標準値に戻ります。個別に書き換えればその値が優先されます。</p>
+ <p class="preset-note">費用5項目（管理料・建物管理・固都税率・修繕・原状回復）・融資割合・空室率・
+ 賃料下落率・返済期間は、新築/中古の切り替え・築年月の変更で当社の標準値に戻ります。
+ 個別に書き換えればその値が優先されます。</p>
 </details>
 
 <div id="output"></div>
@@ -206,11 +207,17 @@
 "use strict";
 const TSUBO = 0.3025;
 const LIFE = {"木造":30,"軽量鉄骨":27,"鉄骨":34,"RC":47,"SRC":47};
-const NEW_PRESET = {mgmt_fee:3.3,bldg_mgmt:150,property_tax:7,repair:0.1,restoration:5000};
-const USED_PRESET = {mgmt_fee:5.5,bldg_mgmt:200,property_tax:10,repair:0.5,restoration:10000};
+const NEW_PRESET = {mgmt_fee:3.3,bldg_mgmt:150,property_tax:7,repair:0.1,restoration:5000,
+                    loan_ratio:95,vacancy:3,decline:0.5};
+const USED_PRESET = {mgmt_fee:5.5,bldg_mgmt:200,property_tax:10,repair:0.5,restoration:10000,
+                     loan_ratio:90,vacancy:5,decline:1};
 const GRADE_COLOR = {A:"#4e8c5f",B:"#8bbf3f",C:"#e8a33d",D:"#b3453a"};
 const $ = id => document.getElementById(id);
-const num = id => parseFloat($(id).value);
+const num = id => parseFloat(String($(id).value).replace(/,/g,""));
+// 金額欄は3桁カンマ表示（type=textにしてJSで整形）
+const MONEY = ["price_sen","bldg_mgmt","utility","construction","restoration"];
+const fmtMoney = el => {const d=String(el.value).replace(/[^\d]/g,"");
+  el.value = d ? Number(d).toLocaleString("ja-JP") : "";};
 const fmt = (v,d=0) => (v===null||v===undefined||isNaN(v)) ? "—"
   : v.toLocaleString("ja-JP",{minimumFractionDigits:d,maximumFractionDigits:d});
 
@@ -236,6 +243,7 @@ function applyPreset(){
   const life = LIFE[$("structure").value] || 30;
   $("loan_years").value = isNew ? 35 : (age===null ? "" : Math.max(life-age,1));
   $("presetLabel").textContent = isNew ? "新築標準" : "中古標準";
+  MONEY.forEach(id=>fmtMoney($(id)));
 }
 
 function svgChart(series, yUnit, yLabel){
@@ -423,6 +431,7 @@ function calc(){
 const PRESET_TRIGGERS = ["is_new","built","structure"];
 document.querySelectorAll("input,select").forEach(el=>{
   el.addEventListener("input",()=>{
+    if(MONEY.includes(el.id)) fmtMoney(el);
     if(PRESET_TRIGGERS.includes(el.id)) applyPreset();
     calc();
   });
