@@ -114,7 +114,11 @@
   .disclaimer { margin-top:2.6rem; font-size:.75rem; color:var(--ink-soft); line-height:2;
     border-top:1px solid var(--line); padding-top:1.4rem; }
 
-  footer { background:var(--sky-deep); color:rgba(255,255,255,.75); text-align:center; padding:3rem 1.5rem 2.4rem; }
+  footer { position:relative; overflow:hidden; background:var(--sky-deep);
+    color:rgba(255,255,255,.75); text-align:center; padding:3rem 1.5rem 2.4rem; }
+  footer > * { position:relative; z-index:2; }
+  footer .stars { position:absolute; inset:0; width:100%; height:100%;
+    pointer-events:none; z-index:1; }
   footer .f-brand { font-family:'Zen Old Mincho', serif; color:#fff; letter-spacing:.16em; font-size:1.05rem;
     margin-bottom:.8rem; display:flex; align-items:center; justify-content:center; gap:.5rem; }
   footer .f-brand .flame { width:12px; height:16px; }
@@ -223,6 +227,22 @@
 </main>
 
 <footer>
+  <svg class="stars" viewBox="0 0 1200 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="#ffe8c2">
+      <circle class="star" cx="70"  cy="40"  r="1.3"/>
+      <circle class="star" cx="180" cy="120" r="1.0" style="animation-delay:1.5s"/>
+      <circle class="star" cx="290" cy="30"  r="1.5" style="animation-delay:.7s"/>
+      <circle class="star" cx="400" cy="90"  r="1.0" style="animation-delay:2.6s"/>
+      <circle class="star" cx="520" cy="140" r="1.2" style="animation-delay:1.0s"/>
+      <circle class="star" cx="640" cy="35"  r="1.1" style="animation-delay:3.1s"/>
+      <circle class="star" cx="760" cy="110" r="1.3" style="animation-delay:.4s"/>
+      <circle class="star" cx="880" cy="50"  r="1.0" style="animation-delay:2.0s"/>
+      <circle class="star" cx="990" cy="130" r="1.4" style="animation-delay:1.3s"/>
+      <circle class="star" cx="1100" cy="60" r="1.1" style="animation-delay:2.8s"/>
+      <circle class="star" cx="1170" cy="140" r="1.2" style="animation-delay:.9s"/>
+      <circle class="star" cx="120" cy="150" r="1.0" style="animation-delay:3.4s"/>
+    </g>
+  </svg>
   <div class="f-brand">
     <svg class="flame" viewBox="0 0 20 26" aria-hidden="true"><path d="M10 0C10 6 3 8.5 3 15a7 7 0 0 0 14 0C17 8.5 10 6 10 0Z" fill="#f5a623"/><path d="M10 9c0 3.4-3.4 4.6-3.4 8a3.4 3.4 0 0 0 6.8 0C13.4 13.6 10 12.4 10 9Z" fill="#ffd28a"/></svg>
     株式会社TOMORU
