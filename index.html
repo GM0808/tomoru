@@ -59,7 +59,21 @@
     font-size:.82rem; letter-spacing:.14em;
   }
   nav a:hover { color:var(--glow); }
-  @media (max-width:640px){ nav { display:none; } }
+  .menu-btn { display:none; background:none; border:none; cursor:pointer; padding:.4rem; }
+  .menu-btn span { display:block; width:22px; height:2px; background:#fff; margin:5px 0; border-radius:2px; }
+  @media (max-width:640px){
+    .menu-btn { display:block; }
+    nav {
+      display:none;
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:rgba(20,27,51,.97);
+      padding:.4rem 0 .8rem;
+      box-shadow:0 8px 20px rgba(0,0,0,.35);
+    }
+    nav.open { display:flex; }
+    nav a { padding:.85rem 1.6rem; font-size:.9rem; }
+  }
 
   /* ───────── hero ───────── */
   .hero {
@@ -274,6 +288,9 @@
     <a href="#company">会社概要</a>
     <a href="#contact">お問い合わせ</a>
   </nav>
+  <button class="menu-btn" id="menu-btn" aria-label="メニューを開く">
+    <span></span><span></span><span></span>
+  </button>
 </header>
 
 <!-- ───────── HERO ───────── -->
@@ -501,6 +518,11 @@
   addEventListener('scroll', () => {
     header.classList.toggle('scrolled', scrollY > 60);
   });
+
+  const menuBtn = document.getElementById('menu-btn');
+  const navEl = document.querySelector('header nav');
+  menuBtn.addEventListener('click', () => navEl.classList.toggle('open'));
+  navEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navEl.classList.remove('open')));
 
   const form = document.getElementById('contact-form');
   const status = document.getElementById('form-status');
