@@ -223,22 +223,22 @@
     .star { animation-name:twinkle-m; }
     @keyframes twinkle-m { 0%,100%{opacity:1} 50%{opacity:.65} }
     .m-stars { display:inline; }
-    .hero-mark path { filter:blur(1.4px); }
+    .hero-mark { --fblur:3.5px; }
   }
-  /* 中央の炎はにじませてやわらかく */
-  .hero-mark path { filter:blur(.7px); }
 
-  /* ろうそくの炎の揺らぎ */
+  /* ろうそくの炎の揺らぎ（にじみは--fblurで全体にかける: スマホSVG内部フィルタ非対応対策） */
   .flame, .hero-mark {
     animation:candle 10s ease-in-out infinite;
     transform-origin:50% 100%;
   }
+  .flame { --fblur:0px; }
+  .hero-mark { --fblur:2px; }
   @keyframes candle {
-    0%, 100% { filter:brightness(.85) drop-shadow(0 0 4px rgba(245,166,35,.32)); transform:scale(1) rotate(0deg); }
-    22%      { filter:brightness(1)   drop-shadow(0 0 7px rgba(245,166,35,.48)); transform:scale(1.045,1.07) rotate(2.8deg); }
-    43%      { filter:brightness(.8)  drop-shadow(0 0 3px rgba(245,166,35,.26)); transform:scale(.965,.945) rotate(-3.2deg); }
-    60%      { filter:brightness(.96) drop-shadow(0 0 6px rgba(245,166,35,.42)); transform:scale(1.03,1.05) rotate(2deg); }
-    82%      { filter:brightness(.86) drop-shadow(0 0 4px rgba(245,166,35,.3));  transform:scale(.985,.975) rotate(-1.5deg); }
+    0%, 100% { filter:blur(var(--fblur)) brightness(.85) drop-shadow(0 0 4px rgba(245,166,35,.32)); transform:scale(1) rotate(0deg); }
+    22%      { filter:blur(var(--fblur)) brightness(1)   drop-shadow(0 0 7px rgba(245,166,35,.48)); transform:scale(1.07,1.105) rotate(4.2deg); }
+    43%      { filter:blur(var(--fblur)) brightness(.8)  drop-shadow(0 0 3px rgba(245,166,35,.26)); transform:scale(.945,.915) rotate(-4.8deg); }
+    60%      { filter:blur(var(--fblur)) brightness(.96) drop-shadow(0 0 6px rgba(245,166,35,.42)); transform:scale(1.045,1.075) rotate(3deg); }
+    82%      { filter:blur(var(--fblur)) brightness(.86) drop-shadow(0 0 4px rgba(245,166,35,.3));  transform:scale(.975,.96) rotate(-2.2deg); }
   }
 
   /* ───────── sections ───────── */
