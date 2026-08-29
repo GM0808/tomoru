@@ -153,16 +153,23 @@
   .shooter-c { animation:shootC 23s linear 7s infinite; }
   .shooter-d { animation:shootD 29s linear 16s infinite; }
   @keyframes shootC {
-    0%   { transform:translate(170px,90px); opacity:0; }
+    0%   { transform:translate(1150px,140px); opacity:0; }
     1.5% { opacity:.9; }
-    6.5% { transform:translate(450px,270px); opacity:0; }
-    100% { transform:translate(450px,270px); opacity:0; }
+    6.5% { transform:translate(880px,290px); opacity:0; }
+    100% { transform:translate(880px,290px); opacity:0; }
   }
   @keyframes shootD {
-    0%   { transform:translate(740px,60px); opacity:0; }
+    0%   { transform:translate(700px,80px); opacity:0; }
     1.5% { opacity:.85; }
-    6%   { transform:translate(580px,280px); opacity:0; }
-    100% { transform:translate(580px,280px); opacity:0; }
+    6%   { transform:translate(470px,220px); opacity:0; }
+    100% { transform:translate(470px,220px); opacity:0; }
+  }
+  /* 地面を歩く猫 */
+  .cat-walk { animation:catwalk 40s linear 6s infinite; }
+  @keyframes catwalk {
+    0%   { transform:translate(500px,150px); }
+    35%  { transform:translate(330px,150px); }
+    100% { transform:translate(330px,150px); }
   }
   .star { animation:twinkle 6s ease-in-out infinite; }
   @keyframes twinkle { 0%,100%{opacity:.95} 50%{opacity:.4} }
@@ -347,14 +354,6 @@
         <stop offset="0" stop-color="#ffe8c2" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff7e6"/>
       </linearGradient>
-      <linearGradient id="shoot-tail2" gradientUnits="userSpaceOnUse" x1="-109" y1="-70" x2="0" y2="0">
-        <stop offset="0" stop-color="#ffe8c2" stop-opacity="0"/>
-        <stop offset="1" stop-color="#fff7e6"/>
-      </linearGradient>
-      <linearGradient id="shoot-tail3" gradientUnits="userSpaceOnUse" x1="76" y1="-105" x2="0" y2="0">
-        <stop offset="0" stop-color="#ffe8c2" stop-opacity="0"/>
-        <stop offset="1" stop-color="#fff7e6"/>
-      </linearGradient>
     </defs>
     <g fill="#ffe8c2">
       <use href="#star-shape" class="star" transform="translate(120,90) scale(4.2) rotate(10)"/>
@@ -403,11 +402,11 @@
       <circle cx="0" cy="0" r="2.4" fill="#fff7e6"/>
     </g>
     <g class="shooter shooter-c">
-      <line x1="-109" y1="-70" x2="0" y2="0" stroke="url(#shoot-tail2)" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="104" y1="-77" x2="0" y2="0" stroke="url(#shoot-tail)" stroke-width="2.2" stroke-linecap="round"/>
       <circle cx="0" cy="0" r="2.4" fill="#fff7e6"/>
     </g>
     <g class="shooter shooter-d">
-      <line x1="76" y1="-105" x2="0" y2="0" stroke="url(#shoot-tail3)" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="104" y1="-77" x2="0" y2="0" stroke="url(#shoot-tail)" stroke-width="2.2" stroke-linecap="round"/>
       <circle cx="0" cy="0" r="2.4" fill="#fff7e6"/>
     </g>
   </svg>
@@ -495,13 +494,17 @@
         <polygon points="1064.3,113.5 1065.3,112.2 1065.6,114"/>
         <path d="M1057.8,121 q-2.4,-.8 -2,-3.8" fill="none" stroke="#0e1426" stroke-width=".8" stroke-linecap="round"/>
       </g>
-      <!-- 屋根の上の猫 -->
-      <g class="person" transform="translate(310,71) scale(1.5) translate(-310,-71)" style="--pd:23s;animation-delay:15s">
-        <ellipse cx="310" cy="68" rx="4" ry="3.2"/>
-        <circle cx="314.3" cy="63.8" r="2.4"/>
-        <polygon points="312.8,62.4 313.3,60.2 314.5,61.9"/>
-        <polygon points="314.9,61.9 316,60.2 316.4,62.5"/>
-        <path d="M306,70 q-3.5,-1.5 -3,-5.5" fill="none" stroke="#0e1426" stroke-width="1" stroke-linecap="round"/>
+      <!-- 地面を歩く猫（家と家の間を通るときだけ見える） -->
+      <g class="cat-walk" transform="translate(500,150)">
+        <ellipse cx="0" cy="-5" rx="6" ry="3"/>
+        <circle cx="-6.5" cy="-8" r="2.6"/>
+        <polygon points="-8.2,-9.8 -7.6,-12.4 -6.4,-10.4"/>
+        <polygon points="-5.6,-10.4 -4.6,-12.4 -4,-9.8"/>
+        <rect x="-5" y="-3.5" width="1.4" height="3.5"/>
+        <rect x="-2.4" y="-3.5" width="1.4" height="3.5"/>
+        <rect x="1" y="-3.5" width="1.4" height="3.5"/>
+        <rect x="3.6" y="-3.5" width="1.4" height="3.5"/>
+        <path d="M5.8,-6 q3,-1 3.6,-4.8" fill="none" stroke="#0e1426" stroke-width="1.1" stroke-linecap="round"/>
       </g>
     </g>
   </svg>
