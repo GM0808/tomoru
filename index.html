@@ -171,15 +171,6 @@
     6%   { transform:translate(310px,300px); opacity:0; }
     100% { transform:translate(310px,300px); opacity:0; }
   }
-  /* サイドの空にゆっくり現れるオーロラ */
-  .aurora { opacity:0; animation:auroraGlow var(--ad,40s) ease-in-out infinite; }
-  @keyframes auroraGlow {
-    0%,12%   { opacity:0;   transform:translateX(0); }
-    30%      { opacity:.5;  transform:translateX(6px); }
-    48%      { opacity:.28; transform:translateX(-5px); }
-    66%      { opacity:.55; transform:translateX(5px); }
-    88%,100% { opacity:0;   transform:translateX(0); }
-  }
   /* 地面を歩く猫: はねて歩く→立ち止まってこちらを向く→しっぽを振る→また歩く */
   .cat-walk { animation:catwalk 44s linear 6s infinite; }
   @keyframes catwalk {
@@ -406,15 +397,6 @@
         <stop offset="0" stop-color="#ffe8c2" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff7e6"/>
       </linearGradient>
-      <linearGradient id="aurora-g" gradientUnits="userSpaceOnUse" x1="0" y1="30" x2="0" y2="310">
-        <stop offset="0" stop-color="#7ef2c0" stop-opacity="0"/>
-        <stop offset=".35" stop-color="#7ef2c0" stop-opacity=".5"/>
-        <stop offset=".7" stop-color="#9aa8ff" stop-opacity=".3"/>
-        <stop offset="1" stop-color="#9aa8ff" stop-opacity="0"/>
-      </linearGradient>
-      <filter id="aurora-blur" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur stdDeviation="7"/>
-      </filter>
     </defs>
     <g fill="#ffe8c2">
       <use href="#star-shape" class="star" transform="translate(120,90) scale(4.2) rotate(10)"/>
@@ -452,13 +434,6 @@
       <use href="#star-shape" class="star" transform="translate(622,432) scale(4.0) rotate(12)" style="animation-delay:2.9s"/>
       <use href="#star-shape" class="star" transform="translate(695,408) scale(2.2) rotate(20)" style="animation-delay:2.2s"/>
       <use href="#star-shape" class="star" transform="translate(660,395) scale(3.2) rotate(-20)" style="animation-delay:1.3s"/>
-    </g>
-    <!-- オーロラ（左右の空にときどきゆらめく） -->
-    <g filter="url(#aurora-blur)" fill="none" stroke-linecap="round">
-      <path class="aurora" style="--ad:34s;animation-delay:3s"  d="M110,50 C140,120 90,200 130,300"   stroke="url(#aurora-g)" stroke-width="34"/>
-      <path class="aurora" style="--ad:43s;animation-delay:14s" d="M170,35 C200,110 150,210 195,310"  stroke="url(#aurora-g)" stroke-width="46"/>
-      <path class="aurora" style="--ad:51s;animation-delay:8s"  d="M235,55 C260,130 215,205 250,295"  stroke="url(#aurora-g)" stroke-width="30"/>
-      <path class="aurora" style="--ad:47s;animation-delay:20s" d="M1080,60 C1110,130 1060,210 1100,300" stroke="url(#aurora-g)" stroke-width="40"/>
     </g>
     <!-- 流れ星 -->
     <g class="shooter shooter-a">
