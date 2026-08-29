@@ -120,12 +120,25 @@
   @keyframes flicker {
     0%,100% { opacity:.95; } 50% { opacity:.72; }
   }
-  /* 窓をときどき人影が横切る（壁の上では建物色に紛れて見えない） */
-  .person { transform:translateX(-15px); animation:person var(--pd,22s) linear infinite; }
-  @keyframes person {
+  /* 窓をときどき人影が横切る（壁の上では建物色に紛れて見えない）
+     動きは3種類: A=途中で立ち止まって外を眺める / B=通り過ぎるだけ / C=窓まで来て引き返す */
+  .person { transform:translateX(-15px); animation:personB var(--pd,22s) linear infinite; }
+  @keyframes personA {
+    0%,50%  { transform:translateX(-15px); }
+    56%,66% { transform:translateX(-2px); }
+    72%     { transform:translateX(15px); }
+    100%    { transform:translateX(15px); }
+  }
+  @keyframes personB {
     0%,55% { transform:translateX(-15px); }
     70%    { transform:translateX(15px); }
     100%   { transform:translateX(15px); }
+  }
+  @keyframes personC {
+    0%,50%  { transform:translateX(-15px); }
+    57%,70% { transform:translateX(1px); }
+    77%     { transform:translateX(-15px); }
+    100%    { transform:translateX(-15px); }
   }
   /* 窓辺に座る猫はその場でふわっと現れる */
   .cat-sit { opacity:0; animation:catsit var(--pd,27s) ease-in-out infinite; }
@@ -517,7 +530,7 @@
     </g>
     <!-- 窓の人影（ときどき現れる） -->
     <g fill="#0e1426">
-      <g class="person" style="--pd:19s;animation-delay:5s">
+      <g class="person" style="--pd:21s;animation-delay:5s;animation-name:personA">
         <circle cx="66" cy="117" r="2.1"/>
         <rect x="62" y="119.5" width="8" height="7" rx="2.5"/>
       </g>
@@ -525,7 +538,7 @@
         <circle cx="524" cy="126.5" r="2"/>
         <rect x="520.5" y="129" width="7" height="6.5" rx="2.2"/>
       </g>
-      <g class="person" style="--pd:31s;animation-delay:2s">
+      <g class="person" style="--pd:29s;animation-delay:2s;animation-name:personC">
         <circle cx="884" cy="117" r="2.1"/>
         <rect x="880" y="119.5" width="8" height="7" rx="2.5"/>
       </g>
