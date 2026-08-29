@@ -120,12 +120,19 @@
   @keyframes flicker {
     0%,100% { opacity:.95; } 50% { opacity:.72; }
   }
-  /* 窓にときどき現れる人影 */
-  .person { opacity:0; animation:person var(--pd,22s) ease-in-out infinite; }
+  /* 窓をときどき人影が横切る（壁の上では建物色に紛れて見えない） */
+  .person { transform:translateX(-15px); animation:person var(--pd,22s) linear infinite; }
   @keyframes person {
+    0%,55% { transform:translateX(-15px); }
+    70%    { transform:translateX(15px); }
+    100%   { transform:translateX(15px); }
+  }
+  /* 窓辺に座る猫はその場でふわっと現れる */
+  .cat-sit { opacity:0; animation:catsit var(--pd,27s) ease-in-out infinite; }
+  @keyframes catsit {
     0%,50%   { opacity:0; }
-    55%,78%  { opacity:.92; }
-    83%,100% { opacity:0; }
+    55%,80%  { opacity:.92; }
+    85%,100% { opacity:0; }
   }
   /* 一部の窓はときどき消灯して、また点く */
   .window-blink { animation:lightcycle var(--d,16s) ease-in-out infinite; }
@@ -139,10 +146,10 @@
   .shooter-a { animation:shootA 13s linear 4s infinite; }
   .shooter-b { animation:shootB 19s linear 11s infinite; }
   @keyframes shootA {
-    0%   { transform:translate(800px,110px); opacity:0; }
+    0%   { transform:translate(880px,75px); opacity:0; }
     2%   { opacity:.95; }
-    8%   { transform:translate(560px,290px); opacity:0; }
-    100% { transform:translate(560px,290px); opacity:0; }
+    8%   { transform:translate(660px,225px); opacity:0; }
+    100% { transform:translate(660px,225px); opacity:0; }
   }
   @keyframes shootB {
     0%   { transform:translate(430px,60px); opacity:0; }
@@ -159,17 +166,62 @@
     100% { transform:translate(880px,290px); opacity:0; }
   }
   @keyframes shootD {
-    0%   { transform:translate(700px,80px); opacity:0; }
+    0%   { transform:translate(520px,170px); opacity:0; }
     1.5% { opacity:.85; }
-    6%   { transform:translate(470px,220px); opacity:0; }
-    100% { transform:translate(470px,220px); opacity:0; }
+    6%   { transform:translate(310px,300px); opacity:0; }
+    100% { transform:translate(310px,300px); opacity:0; }
   }
-  /* 地面を歩く猫 */
-  .cat-walk { animation:catwalk 40s linear 6s infinite; }
+  /* サイドの空にゆっくり現れるオーロラ */
+  .aurora { opacity:0; animation:auroraGlow var(--ad,40s) ease-in-out infinite; }
+  @keyframes auroraGlow {
+    0%,12%   { opacity:0;   transform:translateX(0); }
+    30%      { opacity:.5;  transform:translateX(6px); }
+    48%      { opacity:.28; transform:translateX(-5px); }
+    66%      { opacity:.55; transform:translateX(5px); }
+    88%,100% { opacity:0;   transform:translateX(0); }
+  }
+  /* 地面を歩く猫: はねて歩く→立ち止まってこちらを向く→しっぽを振る→また歩く */
+  .cat-walk { animation:catwalk 44s linear 6s infinite; }
   @keyframes catwalk {
-    0%   { transform:translate(500px,150px); }
-    35%  { transform:translate(330px,150px); }
-    100% { transform:translate(330px,150px); }
+    0%,50% { transform:translate(505px,150px); }
+    51% { transform:translate(496px,148px); }
+    52% { transform:translate(487px,150px); }
+    53% { transform:translate(478px,148px); }
+    54%,68% { transform:translate(472px,150px); }
+    69% { transform:translate(463px,148px); }
+    70% { transform:translate(454px,150px); }
+    71% { transform:translate(445px,148px); }
+    72% { transform:translate(436px,150px); }
+    73% { transform:translate(427px,148px); }
+    74% { transform:translate(418px,150px); }
+    75% { transform:translate(409px,148px); }
+    76% { transform:translate(400px,150px); }
+    77% { transform:translate(391px,148px); }
+    78% { transform:translate(382px,150px); }
+    79% { transform:translate(373px,148px); }
+    80% { transform:translate(364px,150px); }
+    81% { transform:translate(355px,148px); }
+    82% { transform:translate(346px,150px); }
+    83% { transform:translate(338px,148px); }
+    84%,100% { transform:translate(330px,150px); }
+  }
+  /* 立ち止まっている間だけ顔をこちらに向ける */
+  .cat-head-side  { animation:catHeadSide 44s linear 6s infinite; }
+  .cat-head-front { opacity:0; animation:catHeadFront 44s linear 6s infinite; }
+  @keyframes catHeadSide  { 0%,57%{opacity:1} 59%,65%{opacity:0} 67%,100%{opacity:1} }
+  @keyframes catHeadFront { 0%,57%{opacity:0} 59%,65%{opacity:1} 67%,100%{opacity:0} }
+  /* 立ち止まっている間のしっぽパタパタ */
+  .cat-tail { transform-origin:5.8px -6px; animation:catTail 44s linear 6s infinite; }
+  @keyframes catTail {
+    0%,58% { transform:rotate(0deg); }
+    59% { transform:rotate(18deg); }
+    60% { transform:rotate(-6deg); }
+    61% { transform:rotate(18deg); }
+    62% { transform:rotate(-6deg); }
+    63% { transform:rotate(16deg); }
+    64% { transform:rotate(-4deg); }
+    65% { transform:rotate(12deg); }
+    67%,100% { transform:rotate(0deg); }
   }
   .star { animation:twinkle 6s ease-in-out infinite; }
   @keyframes twinkle { 0%,100%{opacity:.95} 50%{opacity:.4} }
@@ -354,6 +406,15 @@
         <stop offset="0" stop-color="#ffe8c2" stop-opacity="0"/>
         <stop offset="1" stop-color="#fff7e6"/>
       </linearGradient>
+      <linearGradient id="aurora-g" gradientUnits="userSpaceOnUse" x1="0" y1="30" x2="0" y2="310">
+        <stop offset="0" stop-color="#7ef2c0" stop-opacity="0"/>
+        <stop offset=".35" stop-color="#7ef2c0" stop-opacity=".5"/>
+        <stop offset=".7" stop-color="#9aa8ff" stop-opacity=".3"/>
+        <stop offset="1" stop-color="#9aa8ff" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="aurora-blur" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="7"/>
+      </filter>
     </defs>
     <g fill="#ffe8c2">
       <use href="#star-shape" class="star" transform="translate(120,90) scale(4.2) rotate(10)"/>
@@ -391,6 +452,13 @@
       <use href="#star-shape" class="star" transform="translate(622,432) scale(4.0) rotate(12)" style="animation-delay:2.9s"/>
       <use href="#star-shape" class="star" transform="translate(695,408) scale(2.2) rotate(20)" style="animation-delay:2.2s"/>
       <use href="#star-shape" class="star" transform="translate(660,395) scale(3.2) rotate(-20)" style="animation-delay:1.3s"/>
+    </g>
+    <!-- オーロラ（左右の空にときどきゆらめく） -->
+    <g filter="url(#aurora-blur)" fill="none" stroke-linecap="round">
+      <path class="aurora" style="--ad:34s;animation-delay:3s"  d="M110,50 C140,120 90,200 130,300"   stroke="url(#aurora-g)" stroke-width="34"/>
+      <path class="aurora" style="--ad:43s;animation-delay:14s" d="M170,35 C200,110 150,210 195,310"  stroke="url(#aurora-g)" stroke-width="46"/>
+      <path class="aurora" style="--ad:51s;animation-delay:8s"  d="M235,55 C260,130 215,205 250,295"  stroke="url(#aurora-g)" stroke-width="30"/>
+      <path class="aurora" style="--ad:47s;animation-delay:20s" d="M1080,60 C1110,130 1060,210 1100,300" stroke="url(#aurora-g)" stroke-width="40"/>
     </g>
     <!-- 流れ星 -->
     <g class="shooter shooter-a">
@@ -478,7 +546,7 @@
         <circle cx="66" cy="117" r="2.1"/>
         <rect x="62" y="119.5" width="8" height="7" rx="2.5"/>
       </g>
-      <g class="person" style="--pd:25s;animation-delay:12s">
+      <g class="person" style="--pd:25s;animation-delay:12s;animation-direction:reverse">
         <circle cx="524" cy="126.5" r="2"/>
         <rect x="520.5" y="129" width="7" height="6.5" rx="2.2"/>
       </g>
@@ -487,7 +555,7 @@
         <rect x="880" y="119.5" width="8" height="7" rx="2.5"/>
       </g>
       <!-- 窓辺に座る猫 -->
-      <g class="person" style="--pd:27s;animation-delay:9s">
+      <g class="cat-sit" style="--pd:27s;animation-delay:9s">
         <ellipse cx="1060.5" cy="119.2" rx="3.1" ry="2.6"/>
         <circle cx="1063.8" cy="115.2" r="1.9"/>
         <polygon points="1062.6,114 1063,112.3 1064,113.6"/>
@@ -495,16 +563,25 @@
         <path d="M1057.8,121 q-2.4,-.8 -2,-3.8" fill="none" stroke="#0e1426" stroke-width=".8" stroke-linecap="round"/>
       </g>
       <!-- 地面を歩く猫（家と家の間を通るときだけ見える） -->
-      <g class="cat-walk" transform="translate(500,150)">
+      <g class="cat-walk" transform="translate(505,150)">
         <ellipse cx="0" cy="-5" rx="6" ry="3"/>
-        <circle cx="-6.5" cy="-8" r="2.6"/>
-        <polygon points="-8.2,-9.8 -7.6,-12.4 -6.4,-10.4"/>
-        <polygon points="-5.6,-10.4 -4.6,-12.4 -4,-9.8"/>
+        <g class="cat-head-side">
+          <circle cx="-6.5" cy="-8" r="2.6"/>
+          <polygon points="-8.2,-9.8 -7.6,-12.4 -6.4,-10.4"/>
+          <polygon points="-5.6,-10.4 -4.6,-12.4 -4,-9.8"/>
+        </g>
+        <g class="cat-head-front">
+          <circle cx="-6.5" cy="-8" r="2.7"/>
+          <polygon points="-8.8,-9.4 -8.2,-12.2 -6.9,-10"/>
+          <polygon points="-6.1,-10 -4.8,-12.2 -4.2,-9.4"/>
+        </g>
         <rect x="-5" y="-3.5" width="1.4" height="3.5"/>
         <rect x="-2.4" y="-3.5" width="1.4" height="3.5"/>
         <rect x="1" y="-3.5" width="1.4" height="3.5"/>
         <rect x="3.6" y="-3.5" width="1.4" height="3.5"/>
-        <path d="M5.8,-6 q3,-1 3.6,-4.8" fill="none" stroke="#0e1426" stroke-width="1.1" stroke-linecap="round"/>
+        <g class="cat-tail">
+          <path d="M5.8,-6 q3,-1 3.6,-4.8" fill="none" stroke="#0e1426" stroke-width="1.1" stroke-linecap="round"/>
+        </g>
       </g>
     </g>
   </svg>
@@ -523,7 +600,7 @@
       その温もりを、もっと多くの住まいへ。
     </p>
     <p class="body-text">
-      社名の「TOMORU」には、家に暖かなあかりをともすように、そこに暮らす人の毎日をそっと照らす存在でありたい、という願いを込めました。
+      社名の「TOMORU」には、住まいに暖かなあかりをともすように、そこに暮らす人の毎日をそっと照らす存在でありたい、という願いを込めました。
       私たちは不動産の賃貸・管理・開発を通じて、安心して暮らせる住まいを守り、育て、次の世代へつないでいきます。
       一棟一棟、一室一室に、ていねいに向き合うこと。それが株式会社TOMORUの原点です。
     </p>
